@@ -1,5 +1,7 @@
 package com.example.notes.Activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -30,40 +32,29 @@ public class NotesShowAll extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_show_all);
         //notes data
-        notes=new ArrayList<Note>();
-        notes.add(new Note(1,"market","don't forget to bring so potatos and we need 2 kilos of tomato with a carton of milk","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
-        notes.add(new Note(1,"market","don't forget to bring so potatos","12/16/19"));
+        notes = HomeActivity.notes;
+        HomeActivity.initNoteData();
         //recycler of notes
         noteRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_all_notes);
         noteLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         noteRecyclerView.setLayoutManager(noteLayoutManager);
-         notesAdapter= new AllNotesAdapter(notes);
+        notesAdapter = new AllNotesAdapter(notes);
         noteRecyclerView.setAdapter(notesAdapter);
         //onCLick
         notesAdapter.setOnItemClickListener(new AllNotebooksAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                String name=notes.get(position).getContextOfNote();
-                Toast.makeText(NotesShowAll.this, name, Toast.LENGTH_SHORT).show();
+                String name = notes.get(position).contextOfNote;
+                Intent intent = new Intent(NotesShowAll.this, EditNoteActivity.class);
+                intent.putExtra("note name", notes.get(position).titleOfNote);
+                intent.putExtra("note context", notes.get(position).contextOfNote);
+                intent.putExtra("note date", notes.get(position).dateOfNote);
+                intent.putExtra("note position", position);
+                startActivity(intent);
             }
         });
 //search filter
-        EditText searchEditText=findViewById(R.id.search_edit_text_notes);
+        EditText searchEditText = findViewById(R.id.search_edit_text_notes);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -82,19 +73,40 @@ public class NotesShowAll extends AppCompatActivity {
         });
     }
 
+    //search filter
     private void filter(String text) {
         ArrayList<Note> filteredList = new ArrayList<>();
 
         for (Note item : notes) {
-            if (item.getTitleOfNote().toLowerCase().contains(text.toLowerCase())) {
+            if (item.titleOfNote.toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(item);
             }
         }
         notesAdapter.filterList(filteredList);
     }
-    public void OnClickBackFromNotebooksToHome(View view) {
-        Intent intent=new Intent(this, HomeActivity.class);
-        startActivity(intent);
 
+    //back button
+    public void OnClickBackFromNotebooksToHome(View view) {
+        finish();
+
+    }
+
+    //add note
+    public void onFabClicked_showAllNotes(View view) {
+        if (HomeActivity.currentNotebookId != "non") {
+            Intent intent = new Intent(this, AddNewNoteActivity.class);
+            startActivity(intent);
+        }
+        else {
+
+            new AlertDialog.Builder(this).setIcon(null).setTitle("Can't add note").setMessage("Please go back to the home window and select the category to add its note").setPositiveButton("Go to Home", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which){
+                    Intent intent=new Intent(NotesShowAll.this,HomeActivity.class);
+                    startActivity(intent);
+                    finish();
+                }}).show();
+
+        }
     }
 }

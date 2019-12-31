@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#FFFFFF"
     tools:context=".Activities.NotesShowAll">
     <ImageView
         android:onClick="OnClickBackFromNotebooksToHome"
@@ -15,17 +16,6 @@
         android:layout_marginTop="10dp"
         android:src="@drawable/backspacepurple"
         ></ImageView>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Done"
-        android:textColor="#7B1E58"
-        android:textSize="17sp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="16dp"
-        >
-        ></TextView>
     <TextView
         android:layout_width="250dp"
         android:layout_height="wrap_content"
@@ -59,6 +49,7 @@
         ></androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:onClick="onFabClicked_showAllNotes"
         android:id="@+id/fab_show_notes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
